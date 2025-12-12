@@ -18,7 +18,7 @@ const syncUserCreation = inngest.createFunction(
       event.data;
 
     let username =
-      email_addresses.email_addresses[0].email_addresses.split("@")[0];
+      email_addresses[0].email_addresses.split("@")[0];
 
     //CHECK AVAILABILTY OF USERNAME
 
