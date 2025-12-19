@@ -13,7 +13,7 @@ export const getUserData = async (req, res) => {
     const { userId } = req.auth();
     const user = await User.findById(userId);
 
-    if (!userId) {
+    if (!user) {
       return res.json({ success: false, message: "User not found" });
     }
     res.json({ success: true, user });
@@ -80,7 +80,7 @@ export const updateUserData = async (req, res) => {
       const buffer = fs.readFileSync(cover.path);
       const response = await imagekit.upload({
         file: buffer,
-        fileName: profile.originalname,
+        fileName: cover.originalname,
       });
 
       const url = imagekit.url({
@@ -222,7 +222,7 @@ export const sendConnectionRequest = async (req, res) => {
     }
 
     // check is user are already connected
-    const coonection = await Connection.findOne({
+    const connection = await Connection.findOne({
       $or: [
         {
           from_user_id: userId,
@@ -236,7 +236,7 @@ export const sendConnectionRequest = async (req, res) => {
     });
 
     if (!connection) {
-     const newConnetion= await Connection.create({
+     const newConnection= await Connection.create({
         from_user_id: userId,
         to_user_id: id,
       });
@@ -245,7 +245,7 @@ export const sendConnectionRequest = async (req, res) => {
       await inngest.send({
         name:'app.connection-request',
         data:{
-connectionId:newConnetion._id
+connectionId:newConnection._id
         }
       })
 

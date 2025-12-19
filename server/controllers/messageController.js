@@ -28,7 +28,7 @@ export const sseController = (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const { to_userid, text } = req.body;
+    const { to_user_id, text } = req.body;
     const image = req.file;
 
     let media_url = "";
@@ -72,8 +72,8 @@ export const sendMessage = async (req, res) => {
       "from_user_id"
     );
 
-    if (connections[to_userid]) {
-      connections[to_userid].write(
+    if (connections[to_user_id]) {
+      connections[to_user_id].write(
         `data: ${JSON.stringify(messageWithUserData)}\n\n `
       );
     }
@@ -115,18 +115,34 @@ export const getChatMessages = async (req, res) => {
   }
 };
 
+// export const getUserRecentMessages = async (req, res) => {
+//   try {
+//     const { userId } = req.auth();
+//     const messages = (
+//       await Message.find(
+//         { to_user_id: userId }).populate("from_user_id to_user_id")
+//       )
+//     .sort({ created_at: -1 });
+
+//     res.json({ success: true, messages });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 export const getUserRecentMessages = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const messages = (
-      await Message.find(
-        { to_user_id: userId }.populate("from_user_id to_user_id")
-      )
-    ).toSorted({ created_at: -1 });
+
+    const messages = await Message.find({ to_user_id: userId })
+      .populate("from_user_id to_user_id")
+      .sort({ createdAt: -1 }); // use createdAt (timestamps:true)
 
     res.json({ success: true, messages });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
