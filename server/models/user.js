@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,7 +19,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    bio: {
+      type: String,
+      default: "Hey there! I am using PingUp",
+    },
     profile_picture: {
+      type: String,
+      default: "",
+    },
+    cover_photo: {
       type: String,
       default: "",
     },
